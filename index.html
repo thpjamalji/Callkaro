@@ -217,6 +217,81 @@
 
 </body>
 </html>
+        document.getElementById('startCallBtn').addEventListener('click', function() {
+            const appID = parseInt(document.getElementById('appId').value);
+            const serverSecret = document.getElementById('appSign').value;
+            const micEnabled = document.getElementById('micToggle').checked;
+            const cameraEnabled = document.getElementById('cameraToggle').checked;
+
+            if (!appID || !serverSecret) {
+                alert('Please enter both App ID and App Sign');
+                return;
+            }
+
+            // Generate user details
+            const userID = String(Math.floor(Math.random() * 100000));
+            const userName = "user_" + userID;
+            const roomID = "simple_call_room";
+
+            try {
+                // Generate Kit Token
+                const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+                    appID,
+                    serverSecret,
+                    roomID,
+                    userID,
+                    userName
+                );
+
+                // Hide settings panel and show video container
+                document.getElementById('settingsPanel').style.display = 'none';
+                document.getElementById('root').style.display = 'block';
+                document.getElementById('callStatus').style.display = 'block';
+
+                // Create ZegoUIKit instance
+                const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+                // Join the room
+                zp.joinRoom({
+                    container: document.querySelector("#root"),
+                    scenario: {
+                        mode: ZegoUIKitPrebuilt.OneONoneCall,
+                    },
+                    showPreJoinView: false,
+                    turnOnMicrophoneWhenJoining: micEnabled,
+                    turnOnCameraWhenJoining: cameraEnabled,
+                    showMyCameraToggleButton: true,
+                    showMyMicrophoneToggleButton: true,
+                    showAudioVideoSettingsButton: true,
+                    showScreenSharingButton: true,
+                    showTextChat: true,
+                    showUserList: false,
+                    showLeavingView: true,
+                    onLeaveRoom: () => {
+                        // Reset UI when leaving
+                        document.getElementById('settingsPanel').style.display = 'block';
+                        document.getElementById('root').style.display = 'none';
+                        document.getElementById('callStatus').style.display = 'none';
+                    }
+                });
+
+            } catch (error) {
+                alert('Error starting call: ' + error.message);
+                console.error('Call error:', error);
+            }
+        });
+
+        // Room ID Display
+        function updateRoomInfo() {
+            const roomInfo = document.getElementById('roomInfo');
+            if (roomInfo) {
+                roomInfo.textContent = `Room ID: simple_call_room`;
+            }
+        }
+    </script>
+
+</body>
+</html>
             background: rgba(255, 193, 7, 0.2);
             color: #ffc107;
             border: 1px solid rgba(255, 193, 7, 0.3);
