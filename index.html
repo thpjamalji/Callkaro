@@ -3,128 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One-to-One Video Call</title>
+    <title>Advanced Professional Calling App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Basic styling for the page */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-bg-dark {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-effect-dark {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(17, 153, 142, 0.6);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4757);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(255, 65, 108, 0.4);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(255, 65, 108, 0.6);
+        }
+        
+        .floating-animation {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dark .text-dark-primary { color: #e2e8f0; }
+        .dark .bg-dark-secondary { background-color: #2d3748; }
+        .dark .bg-dark-primary { background-color: #1a202c; }
+        
+        .voice-visualizer {
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 10px;
         }
-        .input-container {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            max-width: 500px;
+        
+        .voice-bar {
+            width: 3px;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 2px;
+            animation: voiceAnimation 1s infinite;
         }
-        .input-container input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+        
+        .voice-bar:nth-child(2) { animation-delay: 0.1s; }
+        .voice-bar:nth-child(3) { animation-delay: 0.2s; }
+        .voice-bar:nth-child(4) { animation-delay: 0.3s; }
+        .voice-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes voiceAnimation {
+            0%, 100% { height: 8px; }
+            50% { height: 25px; }
         }
-        .input-container button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
+        
+        .connection-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
         }
-        .input-container button:hover {
-            background-color: #0056b3;
+        
+        .status-connected {
+            background: rgba(17, 153, 142, 0.2);
+            color: #11998e;
+            border: 1px solid rgba(17, 153, 142, 0.3);
         }
-        /* Container for the video call UI */
-        #root {
-            width: 100%;
-            height: 80vh;
+        
+        .status-connecting {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .status-disconnected {
+            background: rgba(255, 65, 108, 0.2);
+            color: #ff416c;
+            border: 1px solid rgba(255, 65, 108, 0.3);
         }
     </style>
 </head>
-<body>
-
-    <!-- Step 1: Input fields and Start Call button -->
-    <div class="input-container">
-        <label for="appId">AppID:</label>
-        <input type="text" id="appId" value="335894343">
-
-        <label for="appSign">AppSign:</label>
-        <input type="text" id="appSign" value="546545d8b69f4c086fcf0efde90ba234">
-
-        <button id="startCallBtn">Start Call</button>
+<body class="min-h-screen transition-all duration-300" id="body">
+    
+    <!-- Theme Toggle -->
+    <div class="absolute top-4 left-4 z-50">
+        <button id="themeToggle" class="p-3 rounded-full glass-effect text-white hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-moon text-lg" id="themeIcon"></i>
+        </button>
     </div>
-
-    <!-- This div will be used by the ZegoCloud SDK to render the video call UI -->
-    <div id="root"></div>
-
-    <!-- Step 2: Import the ZegoCloud UIKit Prebuilt SDK -->
+    
+    <!-- Connection Status -->
+    <div class="connection-status status-disconnected" id="connectionStatus">
+        <i class="fas fa-circle mr-2"></i>
+        <span id="statusText">Disconnected</span>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="min-h-screen gradient-bg-light flex items-center justify-center p-4 transition-all duration-300" id="mainContainer">
+        
+        <!-- Setup Panel -->
+        <div class="w-full max-w-md glass-effect rounded-2xl p-8 slide-in" id="setupPanel">
+            
+            <!-- Logo/Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-white bg-opacity-20 flex items-center justify-center floating-animation">
+                    <i class="fas fa-video text-3xl text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white mb-2">Professional Call</h1>
+                <p class="text-white text-opacity-80 text-sm">Connect with crystal clear audio & video</p>
+            </div>
+            
+            <!-- Input Fields -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-white text-sm font-medium mb-2">
+                        <i class="fas fa-user mr-2"></i>Your Name
+                    </label>
+                    <input type="text" id="userName" 
+                           class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-60 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300" 
+                           placeholder="Enter your name">
+                </div>
+                
+                <div>
+                    <label class="block text-white text-sm font-medium mb-2">
+                        <i class="fas fa-door-open mr-2"></i>Room ID
+                    </label>
+                    <input type="text" id="roomId" 
+                           class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-60 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300" 
+                           placeholder="Enter room ID">
+                </div>
+            </div>
+            
+            <!-- Voice Quality Settings -->
+            <div class="mb-6">
+                <label class="block text-white text-sm font-medium mb-3">
+                    <i class="fas fa-microphone mr-2"></i>Audio Quality
+                </label>
+                <select id="audioQuality" class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                    <option value="high" class="text-gray-800">High Quality (128kbps)</option>
+                    <option value="medium" class="text-gray-800">Medium Quality (64kbps)</option>
+                    <option value="low" class="text-gray-800">Low Quality (32kbps)</option>
+                </select>
+            </div>
+            
+            <!-- Call Options -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <label class="flex items-center justify-center p-3 bg-white bg-opacity-20 rounded-xl cursor-pointer hover:bg-opacity-30 transition-all duration-300">
+                    <input type="checkbox" id="enableCamera" checked class="sr-only">
+                    <div class="text-center">
+                        <i class="fas fa-video text-white text-lg mb-1 block" id="cameraIcon"></i>
+                        <span class="text-white text-xs">Camera</span>
+                    </div>
+                </label>
+                
+                <label class="flex items-center justify-center p-3 bg-white bg-opacity-20 rounded-xl cursor-pointer hover:bg-opacity-30 transition-all duration-300">
+                    <input type="checkbox" id="enableMic" checked class="sr-only">
+                    <div class="text-center">
+                        <i class="fas fa-microphone text-white text-lg mb-1 block" id="micIcon"></i>
+                        <span class="text-white text-xs">Microphone</span>
+                    </div>
+                </label>
+            </div>
+            
+            <!-- Join Button -->
+            <button id="joinCallBtn" class="w-full btn-primary text-white font-semibold py-4 rounded-xl hover:scale-105 transition-all duration-300 pulse-animation">
+                <i class="fas fa-phone mr-2"></i>
+                <span id="joinBtnText">Join Call</span>
+                <div class="hidden" id="loadingSpinner">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    Connecting...
+                </div>
+            </button>
+            
+            <!-- Quick Join Options -->
+            <div class="mt-4 text-center">
+                <button id="quickJoinBtn" class="text-white text-opacity-80 text-sm hover:text-opacity-100 transition-colors duration-300">
+                    <i class="fas fa-bolt mr-1"></i>
+                    Quick Join (Random Room)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Call Interface -->
+        <div class="hidden w-full h-screen" id="callInterface">
+            <!-- Voice Visualizer -->
+            <div class="absolute top-20 left-1/2 transform -translate-x-1/2 z-10">
+                <div class="voice-visualizer" id="voiceVisualizer" style="display: none;">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                </div>
+            </div>
+            
+            <!-- Call Controls -->
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+                <div class="flex items-center gap-4 glass-effect rounded-full px-6 py-4">
+                    <button id="toggleMicBtn" class="p-4 btn-secondary rounded-full text-white hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="toggleVideoBtn" class="p-4 btn-secondary rounded-full text-white hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button id="shareScreenBtn" class="p-4 btn-primary rounded-full text-white hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-desktop"></i>
+                    </button>
+                    <button id="endCallBtn" class="p-4 btn-danger rounded-full text-white hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-phone-slash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ZegoCloud Container -->
+            <div id="root" class="w-full h-full"></div>
+        </div>
+    </div>
+    
+    <!-- ZegoCloud SDK -->
     <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
-
+    
     <script>
-        // Step 3: Add an event listener to the "Start Call" button
-        document.getElementById('startCallBtn').addEventListener('click', function() {
-            // Get AppID and AppSign from the input fields
-            const appID = parseInt(document.getElementById('appId').value);
-            const serverSecret = document.getElementById('appSign').value;
-
-            if (!appID || !serverSecret) {
-                alert('AppID and AppSign are required.');
+        // Theme Management
+        let isDark = false;
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.getElementById('body');
+        const mainContainer = document.getElementById('mainContainer');
+        
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                body.classList.add('dark');
+                mainContainer.classList.remove('gradient-bg-light');
+                mainContainer.classList.add('gradient-bg-dark');
+                themeIcon.className = 'fas fa-sun text-lg';
+            } else {
+                body.classList.remove('dark');
+                mainContainer.classList.remove('gradient-bg-dark');
+                mainContainer.classList.add('gradient-bg-light');
+                themeIcon.className = 'fas fa-moon text-lg';
+            }
+        });
+        
+        // Audio/Video Toggle Functionality
+        const enableCamera = document.getElementById('enableCamera');
+        const enableMic = document.getElementById('enableMic');
+        const cameraIcon = document.getElementById('cameraIcon');
+        const micIcon = document.getElementById('micIcon');
+        
+        enableCamera.addEventListener('change', () => {
+            if (enableCamera.checked) {
+                cameraIcon.className = 'fas fa-video text-white text-lg mb-1 block';
+            } else {
+                cameraIcon.className = 'fas fa-video-slash text-white text-lg mb-1 block';
+            }
+        });
+        
+        enableMic.addEventListener('change', () => {
+            if (enableMic.checked) {
+                micIcon.className = 'fas fa-microphone text-white text-lg mb-1 block';
+            } else {
+                micIcon.className = 'fas fa-microphone-slash text-white text-lg mb-1 block';
+            }
+        });
+        
+        // Connection Status Management
+        function updateConnectionStatus(status) {
+            const connectionStatus = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            connectionStatus.className = 'connection-status';
+            
+            switch(status) {
+                case 'connected':
+                    connectionStatus.classList.add('status-connected');
+                    statusText.textContent = 'Connected';
+                    break;
+                case 'connecting':
+                    connectionStatus.classList.add('status-connecting');
+                    statusText.textContent = 'Connecting...';
+                    break;
+                case 'disconnected':
+                    connectionStatus.classList.add('status-disconnected');
+                    statusText.textContent = 'Disconnected';
+                    break;
+            }
+        }
+        
+        // Voice Visualizer
+        function showVoiceVisualizer() {
+            document.getElementById('voiceVisualizer').style.display = 'flex';
+        }
+        
+        function hideVoiceVisualizer() {
+            document.getElementById('voiceVisualizer').style.display = 'none';
+        }
+        
+        // Quick Join functionality
+        document.getElementById('quickJoinBtn').addEventListener('click', () => {
+            const randomRoom = 'room_' + Math.floor(Math.random() * 100000);
+            document.getElementById('roomId').value = randomRoom;
+            document.getElementById('userName').value = 'User_' + Math.floor(Math.random() * 1000);
+            startCall();
+        });
+        
+        // Main Join Call functionality
+        document.getElementById('joinCallBtn').addEventListener('click', startCall);
+        
+        function startCall() {
+            const userName = document.getElementById('userName').value.trim();
+            const roomId = document.getElementById('roomId').value.trim();
+            
+            if (!userName) {
+                alert('Please enter your name');
                 return;
             }
-
-            // Step 4: Generate a random userID
+            
+            if (!roomId) {
+                alert('Please enter a room ID');
+                return;
+            }
+            
+            // Show loading state
+            const joinBtn = document.getElementById('joinCallBtn');
+            const joinBtnText = document.getElementById('joinBtnText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            joinBtnText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-flex';
+            joinBtn.disabled = true;
+            
+            updateConnectionStatus('connecting');
+            
+            // ZegoCloud Configuration
+            const appID = 335894343;
+            const serverSecret = "546545d8b69f4c086fcf0efde90ba234";
             const userID = String(Math.floor(Math.random() * 100000));
-            const userName = "user_" + userID;
-
-            // Step 5: Define a fixed roomID
-            const roomID = "call_room";
-
-            // Step 6: Generate a Kit Token for authentication.
-            // Note: This client-side generation is for testing purposes only. [1]
-            // In a production environment, you should generate the token on your server. [1]
+            
+            // Generate Kit Token
             const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
                 appID,
                 serverSecret,
-                roomID,
+                roomId,
                 userID,
                 userName
             );
-
-            // Step 7: Create an instance of the ZegoUIKitPrebuilt and join the room.
+            
+            // Create ZegoUIKitPrebuilt instance
             const zp = ZegoUIKitPrebuilt.create(kitToken);
-
-            zp.joinRoom({
-                container: document.querySelector("#root"),
-                // Set to 1-on-1 calling mode
-                scenario: {
-                    mode: ZegoUIKitPrebuilt.OneONoneCall,
-                },
-                // Configuration for the call UI
-                showPreJoinView: true, // Show a preview page before joining the call
-                turnOnMicrophoneWhenJoining: true, // Mic is on by default
-                turnOnCameraWhenJoining: true, // Camera is on by default
-                showMyCameraToggleButton: true, // Show camera toggle button
-                showMyMicrophoneToggleButton: true, // Show microphone toggle button
-                showAudioVideoSettingsButton: true,
-                showScreenSharingButton: true,
-                showTextChat: true,
-                showUserList: true,
-                showLeavingView: true,
-                // The end call button is shown by default. The following will redirect to a custom page after leaving the call.
-                onLeaveRoom: () => {
-                    // Redirect or perform cleanup after leaving the room
-                    window.location.reload();
+            
+            // Hide setup panel and show call interface
+            setTimeout(() => {
+                document.getElementById('setupPanel').style.display = 'none';
+                document.getElementById('callInterface').classList.remove('hidden');
+                updateConnectionStatus('connected');
+                
+                // Show voice visualizer for audio-only calls
+                if (!enableCamera.checked) {
+                    showVoiceVisualizer();
                 }
-            });
-        });
-    </script>
-
-</body>
-</html>
+                
+                // Join the room
+                zp.joinRoom({
+                    container: document.querySelector("#root"),
+                    scenario: {
+                        mode: ZegoUIKitPrebuilt.OneONoneCall,
+                    },
+                    showPreJoinView: false,
+                    turnOnMicrophoneWhenJoining: enableMic.checked,
+                    turnOnCameraWhenJoining: enableCamera.checked,
+                    showMyCameraToggleButton: true,
+                    showMyMicrophoneToggleButton: true,
+                    showAudioVideoSettingsButton: true,
+                    showScreenSharingButton: true,
+                    showTextChat: true,
+                    showUserList: true,
+                    showLeavingView: false,
+                    maxUsers: 2,
+                    layout: "Auto",
+                    onJoinRoom: () => {
+                        console.log('Successfully joined the room');
+                        updateConnectionStatus('connected');
+                    },
+                    onLeaveRoom: () => {
+                        // Reset UI
+                        document.getElementById('callInterface').classList.add('hidden');
+                        document.getElementById('setupPanel').sty
