@@ -3,145 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Professional Calling App</title>
+    <title>Simple ZegoCloud Video Call</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', sans-serif;
+        .theme-dark {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #ffffff;
         }
-        
-        .gradient-bg-light {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .theme-light {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            color: #1a202c;
         }
-        
-        .gradient-bg-dark {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        .theme-blue {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: #ffffff;
         }
-        
         .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        .glass-effect-dark {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
         .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
         }
-        
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.6);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
         }
+    </style>
+</head>
+<body class="min-h-screen theme-dark transition-all duration-500">
+    
+    <!-- Theme Selector -->
+    <div class="fixed top-4 right-4 z-50">
+        <select id="themeSelector" class="px-4 py-2 rounded-lg glass-effect text-white border-0 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="dark">🌙 Dark</option>
+            <option value="light">☀️ Light</option>
+            <option value="blue">💙 Blue</option>
+        </select>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
         
-        .btn-secondary {
-            background: linear-gradient(45deg, #11998e, #38ef7d);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px 0 rgba(17, 153, 142, 0.4);
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2">
+                <i class="fas fa-video mr-3"></i>Video Call
+            </h1>
+            <p class="opacity-75">Simple & Secure Video Calling</p>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="max-w-md mx-auto mb-8">
+            <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-cog mr-2"></i>Call Settings
+                </h2>
+                
+                <!-- App Credentials -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">App ID</label>
+                        <input type="text" id="appId" value="335894343" 
+                               class="w-full px-4 py-2 rounded-lg glass-effect border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">App Sign</label>
+                        <input type="text" id="appSign" value="546545d8b69f4c086fcf0efde90ba234"
+                               class="w-full px-4 py-2 rounded-lg glass-effect border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400">
+                    </div>
+
+                    <!-- Voice Settings -->
+                    <div class="flex justify-between items-center py-2">
+                        <span class="flex items-center">
+                            <i class="fas fa-microphone mr-2"></i>Microphone
+                        </span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="micToggle" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex justify-between items-center py-2">
+                        <span class="flex items-center">
+                            <i class="fas fa-video mr-2"></i>Camera
+                        </span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="cameraToggle" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Start Call Button -->
+                <button id="startCallBtn" class="w-full mt-6 btn-primary text-white font-semibold py-3 px-6 rounded-lg shadow-lg">
+                    <i class="fas fa-phone mr-2"></i>Start Call
+                </button>
+            </div>
+        </div>
+
+        <!-- Video Call Container -->
+        <div id="root" class="w-full h-96 rounded-2xl overflow-hidden shadow-2xl" style="display: none;"></div>
+        
+        <!-- Call Status -->
+        <div id="callStatus" class="text-center mt-4" style="display: none;">
+            <p class="text-lg">
+                <i class="fas fa-circle text-green-400 mr-2 animate-pulse"></i>
+                Connected to Room
+            </p>
+        </div>
+    </div>
+
+    <!-- ZegoCloud SDK -->
+    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+    
+    <script>
+        // Theme Management
+        const themeSelector = document.getElementById('themeSelector');
+        const body = document.body;
+
+        themeSelector.addEventListener('change', function() {
+            const theme = this.value;
+            body.className = body.className.replace(/theme-\w+/, `theme-${theme}`);
+            
+            if (theme === 'light') {
+                body.classList.add('dark');
+            } else {
+                body.classList.remove('dark');
+            }
+        });
+
+        // Video Call Functionality
+        document.getElementById('startCallBtn').addEventListener('click', function() {
+            const appID = parseInt(document.getElementById('appId').value);
+            const serverSecret = document.getElementById('appSign').value;
+            const micEnabled = document.getElementById('micToggle').checked;
+            const cameraEnabled = document.getElementById('cameraToggle').checked;
+
+            if (!appID || !serverSecret) {
+                alert('Please enter both App ID and App Sign');
+                return;
+            }
+
+            // Generate user details
+            const userID = String(Math.floor(Math.random() * 100000));
+            const userName = "user_" + userID;
+            const roomID = "simple_call_room";
+
+            try {
+                // Generate Kit Token
+                const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+                    appID,
+                    serverSecret,
+                    roomID,
+                    userID,
+                    userName
+                );
+
+                // Hide settings panel and show video container
+                document.getElementById('settingsPanel').style.display = 'none';
+                document.getElementById('root').style.display = 'block';
+                document.getElementById('callStatus').style.display = 'block';
+
+                // Create ZegoUIKit instance
+                const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+                // Join the room
+                zp.joinRoom({
+                    container: document.querySelector("#root"),
+                    scenario: {
+                        mode: ZegoUIKitPrebuilt.OneONoneCall,
+                    },
+                    showPreJoinView: false,
+                    turnOnMicrophoneWhenJoining: micEnabled,
+                    turnOnCameraWhenJoining: cameraEnabled,
+                    showMyCameraToggleButton: true,
+                    showMyMicrophoneToggleButton: true,
+                    showAudioVideoSettingsButton: true,
+                    showScreenSharingButton: true,
+                    showTextChat: true,
+                    showUserList: false,
+                    showLeavingView: true,
+                    onLeaveRoom: () => {
+                        // Reset UI when leaving
+                        document.getElementById('settingsPanel').style.display = 'block';
+                        document.getElementById('root').style.display = 'none';
+                        document.getElementById('callStatus').style.display = 'none';
+                    }
+                });
+
+            } catch (error) {
+                alert('Error starting call: ' + error.message);
+                console.error('Call error:', error);
+            }
+        });
+
+        // Room ID Display
+        function updateRoomInfo() {
+            const roomInfo = document.getElementById('roomInfo');
+            if (roomInfo) {
+                roomInfo.textContent = `Room ID: simple_call_room`;
+            }
         }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px 0 rgba(17, 153, 142, 0.6);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(45deg, #ff416c, #ff4757);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px 0 rgba(255, 65, 108, 0.4);
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px 0 rgba(255, 65, 108, 0.6);
-        }
-        
-        .floating-animation {
-            animation: floating 3s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .pulse-animation {
-            animation: pulse-glow 2s infinite;
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
-            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .dark .text-dark-primary { color: #e2e8f0; }
-        .dark .bg-dark-secondary { background-color: #2d3748; }
-        .dark .bg-dark-primary { background-color: #1a202c; }
-        
-        .voice-visualizer {
-            width: 100%;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            padding: 0 10px;
-        }
-        
-        .voice-bar {
-            width: 3px;
-            background: linear-gradient(to top, #667eea, #764ba2);
-            border-radius: 2px;
-            animation: voiceAnimation 1s infinite;
-        }
-        
-        .voice-bar:nth-child(2) { animation-delay: 0.1s; }
-        .voice-bar:nth-child(3) { animation-delay: 0.2s; }
-        .voice-bar:nth-child(4) { animation-delay: 0.3s; }
-        .voice-bar:nth-child(5) { animation-delay: 0.4s; }
-        
-        @keyframes voiceAnimation {
-            0%, 100% { height: 8px; }
-            50% { height: 25px; }
-        }
-        
-        .connection-status {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status-connected {
-            background: rgba(17, 153, 142, 0.2);
-            color: #11998e;
-            border: 1px solid rgba(17, 153, 142, 0.3);
-        }
-        
-        .status-connecting {
+    </script>
+
+</body>
+</html>
             background: rgba(255, 193, 7, 0.2);
             color: #ffc107;
             border: 1px solid rgba(255, 193, 7, 0.3);
