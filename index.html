@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-to-One Video Call</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-container {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .input-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .input-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+        /* Container for the video call UI */
+        #root {
+            width: 100%;
+            height: 80vh;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Step 1: Input fields and Start Call button -->
+    <div class="input-container">
+        <label for="appId">AppID:</label>
+        <input type="text" id="appId" value="335894343">
+
+        <label for="appSign">AppSign:</label>
+        <input type="text" id="appSign" value="546545d8b69f4c086fcf0efde90ba234">
+
+        <button id="startCallBtn">Start Call</button>
+    </div>
+
+    <!-- This div will be used by the ZegoCloud SDK to render the video call UI -->
+    <div id="root"></div>
+
+    <!-- Step 2: Import the ZegoCloud UIKit Prebuilt SDK -->
+    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+
+    <script>
+        // Step 3: Add an event listener to the "Start Call" button
+        document.getElementById('startCallBtn').addEventListener('click', function() {
+            // Get AppID and AppSign from the input fields
+            const appID = parseInt(document.getElementById('appId').value);
+            const serverSecret = document.getElementById('appSign').value;
+
+            if (!appID || !serverSecret) {
+                alert('AppID and AppSign are required.');
+                return;
+            }
+
+            // Step 4: Generate a random userID
+            const userID = String(Math.floor(Math.random() * 100000));
+            const userName = "user_" + userID;
+
+            // Step 5: Define a fixed roomID
+            const roomID = "call_room";
+
+            // Step 6: Generate a Kit Token for authentication.
+            // Note: This client-side generation is for testing purposes only. [1]
+            // In a production environment, you should generate the token on your server. [1]
+            const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+                appID,
+                serverSecret,
+                roomID,
+                userID,
+                userName
+            );
+
+            // Step 7: Create an instance of the ZegoUIKitPrebuilt and join the room.
+            const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+            zp.joinRoom({
+                container: document.querySelector("#root"),
+                // Set to 1-on-1 calling mode
+                scenario: {
+                    mode: ZegoUIKitPrebuilt.OneONoneCall,
+                },
+                // Configuration for the call UI
+                showPreJoinView: true, // Show a preview page before joining the call
+                turnOnMicrophoneWhenJoining: true, // Mic is on by default
+                turnOnCameraWhenJoining: true, // Camera is on by default
+                showMyCameraToggleButton: true, // Show camera toggle button
+                showMyMicrophoneToggleButton: true, // Show microphone toggle button
+                showAudioVideoSettingsButton: true,
+                showScreenSharingButton: true,
+                showTextChat: true,
+                showUserList: true,
+                showLeavingView: true,
+                // The end call button is shown by default. The following will redirect to a custom page after leaving the call.
+                onLeaveRoom: () => {
+                    // Redirect or perform cleanup after leaving the room
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
